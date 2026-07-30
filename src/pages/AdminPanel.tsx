@@ -210,6 +210,7 @@ export default function AdminPanel() {
             link="/admin/realms"
             color="#d4af37"
             stats="1 Realm"
+            navigate={navigate}
           />
           <AdminCard
             title="News"
@@ -218,6 +219,7 @@ export default function AdminPanel() {
             link="/admin/news"
             color="#4ade80"
             stats="News Management"
+            navigate={navigate}
           />
           <AdminCard
             title="Users"
@@ -226,6 +228,7 @@ export default function AdminPanel() {
             link="/admin/users"
             color="#a896de"
             stats="User Management"
+            navigate={navigate}
           />
           <AdminCard
             title="Server Info"
@@ -234,6 +237,7 @@ export default function AdminPanel() {
             link="/admin/server-info"
             color="#f97316"
             stats="Server Stats"
+            navigate={navigate}
           />
         </div>
       </div>
@@ -241,17 +245,18 @@ export default function AdminPanel() {
   );
 }
 
-function AdminCard({ title, description, icon, link, color, stats }: { 
+function AdminCard({ title, description, icon, link, color, stats, navigate }: { 
   title: string; 
   description: string; 
   icon: string; 
   link: string; 
   color: string;
   stats: string;
+  navigate: any;
 }) {
   return (
     <div
-      onClick={() => window.location.href = link}
+      onClick={() => navigate(link)}
       style={{
         padding: '32px',
         background: 'linear-gradient(135deg, rgba(30, 30, 33, 0.9) 0%, rgba(20, 20, 23, 0.9) 100%)',
