@@ -49,7 +49,9 @@ export default function RegisterPage() {
 
       // Step 2: Create game account via backend
       try {
-        const response = await fetch('http://localhost:3001/api/accounts/create', {
+        // Use the current domain for API calls
+        const baseUrl = window.location.origin;
+        const response = await fetch(`${baseUrl}/api/accounts/create`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
