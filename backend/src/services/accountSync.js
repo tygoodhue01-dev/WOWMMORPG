@@ -4,7 +4,8 @@ import { gameDbPool, supabase } from '../config/database.js';
 // SRP6 Password Hashing for AzerothCore
 class WoWPasswordHasher {
   constructor() {
-    this.salt = crypto.randomBytes(32);
+    // Generate a smaller salt (16 bytes = 32 hex characters)
+    this.salt = crypto.randomBytes(16);
   }
 
   // Generate SRP6 verifier
@@ -32,14 +33,14 @@ class WoWPasswordHasher {
     sha2.update(hI);
     const x = sha2.digest();
     
-    // v = g^x mod N (simplified)
+    // v = g^x mod N (simplified - use smaller hash)
     const v = crypto.createHash('sha1');
     v.update(x);
-    const verifier = v.digest('hex');
+    const verifier = v.digest('hex').substring(0, 32); // Limit to 32 characters
     
     return {
-      salt: s.toString('hex'),
-      verifier: verifier.toUpperCase()
+      salt: s.toString('hex'), // 32 characters (16 bytes * 2)
+      verifier: verifier.toUpperCase() // 32 characters
     };
   }
 
