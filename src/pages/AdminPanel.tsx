@@ -239,6 +239,15 @@ export default function AdminPanel() {
             stats="Server Stats"
             navigate={navigate}
           />
+          <AdminCard
+            title="Server Manager"
+            description="Control game server, view logs, and manage processes"
+            icon="🖥️"
+            link="/admin/server-manager"
+            color="#06b6d4"
+            stats="Process Control"
+            navigate={navigate}
+          />
         </div>
       </div>
     </div>

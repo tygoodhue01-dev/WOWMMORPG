@@ -13,6 +13,7 @@ import AdminRealms from '@/pages/admin/AdminRealms';
 import AdminNews from '@/pages/admin/AdminNews';
 import AdminUsers from '@/pages/admin/AdminUsers';
 import AdminServerInfo from '@/pages/admin/AdminServerInfo';
+import AdminServerManager from '@/pages/admin/AdminServerManager';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/admin/news" element={<AdminNews />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/server-info" element={<AdminServerInfo />} />
+            <Route path="/admin/server-manager" element={<AdminServerManager />} />
             <Route path="*" element={<div style={{ padding: '20px', color: 'white' }}><h1>404</h1><p>Page not found</p></div>} />
           </Routes>
         </Layout>

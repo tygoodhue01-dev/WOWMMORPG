@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import realmRoutes from './routes/realms.js';
 import accountRoutes from './routes/accounts.js';
 import characterRoutes from './routes/characters.js';
+import serverRoutes from './routes/server.js';
 import { startRealmStatusPolling } from './services/realmStatus.js';
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/api/realms', realmRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/characters', characterRoutes);
+app.use('/api/server', serverRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
