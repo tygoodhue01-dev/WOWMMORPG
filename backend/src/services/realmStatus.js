@@ -168,17 +168,24 @@ async function updateSupabaseRealmStatus() {
       // Use the exact UUID from your existing Supabase data
       const uuidId = '00000000-0000-0000-0000-000040697873';
       
-      // First, try to delete the existing record to ensure clean update
-      await supabase.from('realms').delete().eq('id', uuidId);
+      // First, check if the realm exists and if the host has been manually edited
+      const { data: existingRealm } = await supabase
+        .from('realms')
+        .select('host')
+        .eq('id', uuidId)
+        .single();
+      
+      // If the realm exists and has a custom host that's different from game server, preserve it
+      const useCustomHost = existingRealm && existingRealm.host && existingRealm.host !== realm.host;
       
       const { error } = await supabase
         .from('realms')
-        .insert({
+        .upsert({
           id: uuidId,
           name: 'Rune Haven',
           type: realm.type,
           expansion: realm.expansion,
-          host: realm.host,
+          host: useCustomHost ? existingRealm.host : realm.host, // Preserve custom host if set
           port: realm.port,
           online: realm.online,
           players_online: realm.players_online,
@@ -187,12 +194,17 @@ async function updateSupabaseRealmStatus() {
           description: 'Rune Haven realm',
           display_order: realm.display_order,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
         });
 
       if (error) {
         console.error(`Error updating realm Rune Haven:`, error);
       } else {
         console.log(`✓ Updated realm status: Rune Haven with ${realm.players_online} players online, online: ${realm.online}`);
+        if (useCustomHost) {
+          console.log(`  - Preserved custom host: ${existingRealm.host}`);
+        }
       }
     }
 
