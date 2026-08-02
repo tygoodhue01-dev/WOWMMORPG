@@ -12,11 +12,20 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/realms', label: 'Realms' },
     { to: '/news', label: 'News' },
+    { to: '/leaderboards', label: 'Leaderboards' },
+    { to: '/armory', label: 'Armory' },
+    { to: '/items', label: 'Items' },
+    { to: '/guilds', label: 'Guilds' },
     { to: '/connect', label: 'How to Connect' },
   ];
 
-  const isActive = (path: string) =>
-    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    if (path === '/items') return location.pathname.startsWith('/items');
+    if (path === '/armory') return location.pathname.startsWith('/armory');
+    if (path === '/guilds') return location.pathname.startsWith('/guilds');
+    return location.pathname.startsWith(path);
+  };
 
   useEffect(() => {
     (async () => {

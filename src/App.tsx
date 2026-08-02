@@ -8,6 +8,10 @@ import ConnectPage from '@/pages/ConnectPage';
 import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
 import AccountPage from '@/pages/AccountPage';
+import LeaderboardsPage from '@/pages/LeaderboardsPage';
+import ArmoryPage from '@/pages/ArmoryPage';
+import ItemDatabasePage from '@/pages/ItemDatabasePage';
+import GuildsPage from '@/pages/GuildsPage';
 import AdminPanel from '@/pages/AdminPanel';
 import AdminRealms from '@/pages/admin/AdminRealms';
 import AdminNews from '@/pages/admin/AdminNews';
@@ -28,6 +32,13 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/account" element={<AccountPage />} />
+            <Route path="/leaderboards" element={<LeaderboardsPage />} />
+            <Route path="/armory" element={<ArmoryPage />} />
+            <Route path="/armory/:guid" element={<ArmoryPage />} />
+            <Route path="/items" element={<ItemDatabasePage />} />
+            <Route path="/items/:entry" element={<ItemDatabasePage />} />
+            <Route path="/guilds" element={<GuildsPage />} />
+            <Route path="/guilds/:guildId" element={<GuildsPage />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/admin/realms" element={<AdminRealms />} />
             <Route path="/admin/news" element={<AdminNews />} />

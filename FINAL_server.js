@@ -110,9 +110,8 @@ router.post('/start', async (req, res) => {
   try {
     const { exec } = await import('child_process');
     
-    // Use full path to executable
-    const executablePath = path.join(GAME_SERVER_PATH, GAME_SERVER_EXECUTABLE);
-    const startCommand = `"${executablePath}"`;
+    // Change to the server directory and start the executable
+    const startCommand = `cd /d "${GAME_SERVER_PATH}" && start "" ${GAME_SERVER_EXECUTABLE}`;
     
     exec(startCommand, { windowsHide: true }, (error, stdout, stderr) => {
       if (error) {
@@ -171,8 +170,7 @@ router.post('/restart', async (req, res) => {
       
       // Wait a moment, then start
       setTimeout(() => {
-        const executablePath = path.join(GAME_SERVER_PATH, GAME_SERVER_EXECUTABLE);
-        const startCommand = `"${executablePath}"`;
+        const startCommand = `cd /d "${GAME_SERVER_PATH}" && start "" ${GAME_SERVER_EXECUTABLE}`;
         exec(startCommand, (startError) => {
           if (startError) {
             res.status(500).json({ success: false, error: 'Failed to start server during restart' });
