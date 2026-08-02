@@ -95,6 +95,9 @@ export default function AdminRealms() {
     if (!editingRealm) return;
 
     try {
+      console.log('Updating realm with data:', formData);
+      console.log('Host being set:', formData.host);
+      
       const { error } = await supabase
         .from('realms')
         .update({
@@ -103,15 +106,21 @@ export default function AdminRealms() {
         })
         .eq('id', editingRealm.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error);
+        throw error;
+      }
 
+      console.log('Realm updated successfully');
       setEditingRealm(null);
       setShowForm(false);
       
       const { data } = await supabase.from('realms').select('*').order('display_order');
+      console.log('Updated realms from database:', data);
       setRealms(data ?? []);
     } catch (error) {
       console.error('Error updating realm:', error);
+      alert('Failed to update realm: ' + error.message);
     }
   };
 
@@ -205,6 +214,26 @@ export default function AdminRealms() {
               }}
             >
               Back to Admin
+            </button>
+            <button
+              onClick={() => {
+                console.log('Current form data:', formData);
+                console.log('Current realms:', realms);
+                alert('Debug info logged to console. Press F12 to view.');
+              }}
+              style={{
+                padding: '14px 28px',
+                background: 'rgba(168, 142, 222, 0.2)',
+                color: '#a896de',
+                border: '1px solid #a896de',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+            >
+              Debug Info
             </button>
           </div>
         </div>
