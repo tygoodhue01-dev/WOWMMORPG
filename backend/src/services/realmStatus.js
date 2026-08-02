@@ -177,6 +177,7 @@ async function updateSupabaseRealmStatus() {
       
       // If the realm exists and has a custom host that's different from game server, preserve it
       const useCustomHost = existingRealm && existingRealm.host && existingRealm.host !== realm.host;
+      const finalHost = useCustomHost ? existingRealm.host : realm.host;
       
       const { error } = await supabase
         .from('realms')
@@ -185,7 +186,7 @@ async function updateSupabaseRealmStatus() {
           name: 'Rune Haven',
           type: realm.type,
           expansion: realm.expansion,
-          host: useCustomHost ? existingRealm.host : realm.host, // Preserve custom host if set
+          host: finalHost, // Use custom host if set, otherwise use game server host
           port: realm.port,
           online: realm.online,
           players_online: realm.players_online,
@@ -202,8 +203,21 @@ async function updateSupabaseRealmStatus() {
         console.error(`Error updating realm Rune Haven:`, error);
       } else {
         console.log(`✓ Updated realm status: Rune Haven with ${realm.players_online} players online, online: ${realm.online}`);
+        console.log(`  - Using host: ${finalHost} ${useCustomHost ? '(custom)' : '(from game server)'}`);
+        
+        // If using custom host, perform additional connection check
         if (useCustomHost) {
-          console.log(`  - Preserved custom host: ${existingRealm.host}`);
+          const isCustomHostReachable = await checkGameServerOnline(finalHost, realm.port);
+          console.log(`  - Custom host reachable: ${isCustomHostReachable}`);
+          
+          // Update online status based on custom host check
+          if (isCustomHostReachable !== realm.online) {
+            await supabase
+              .from('realms')
+              .update({ online: isCustomHostReachable })
+              .eq('id', uuidId);
+            console.log(`  - Updated online status to: ${isCustomHostReachable}`);
+          }
         }
       }
     }
