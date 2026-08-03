@@ -66,20 +66,6 @@ class WoWPasswordHasher {
   }
 }
 
-// Expansion IDs for AzerothCore
-const EXPANSION_IDS = {
-  'Classic': 0,
-  'The Burning Crusade': 1,
-  'WotLK 3.3.5a': 2,
-  'Cataclysm 4.3.4': 3,
-  'Mists of Pandaria 5.4.8': 4,
-  'Warlords of Draenor': 5,
-  'Legion': 6,
-  'Battle for Azeroth': 7,
-  'Shadowlands': 8,
-  'Dragonflight': 9
-};
-
 // Create game account
 async function createGameAccount(supabaseUserId, accountName, password, expansion = 'WotLK 3.3.5a') {
   try {
