@@ -17,7 +17,22 @@ export const gameDbPool = mysql.createPool({
 
 export const supabase = createClient(
   'https://rbhpjvqtxquoqswnpwib.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJiaHBqdnF0eHF1b3Fzd25wd2liIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTIwNzMyMywiZXhwIjoyMTAwNzgzMzIzfQ.B0JdbePdL4wlFwyhMgopH4UnqeRCHXB7H0CoA1KgrG4'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJiaHBqdnF0eHF1b3Fzd25wd2liIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTIwNzMyMywiZXhwIjoyMTAwNzgzMzIzfQ.B0JdbePdL4wlFwyhMgopH4UnqeRCHXB7H0CoA1KgrG4',
+  {
+    db: {
+      schema: 'public'
+    },
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false
+    },
+    realtime: false,
+    global: {
+      headers: {
+        'X-Client-Info': 'azeroth-backend'
+      }
+    }
+  }
 );
 
 export async function testConnections() {
