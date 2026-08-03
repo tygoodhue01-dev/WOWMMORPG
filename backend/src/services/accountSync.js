@@ -65,9 +65,13 @@ class WoWPasswordHasher {
     sha1.update(`${username.toUpperCase()}:${password.toUpperCase()}`);
     const hash = sha1.digest('hex').toUpperCase();
     
+    // Generate exactly 32 bytes of binary data as AzerothCore expects
+    const fullHash = hash.padEnd(64, '0'); // Ensure 64 hex characters
+    const binaryData = Buffer.from(fullHash, 'hex'); // Convert hex to binary (32 bytes)
+    
     return {
-      salt: hash.substring(0, 32), // 32 hex characters (16 bytes)
-      verifier: hash.substring(0, 32) // 32 hex characters (16 bytes)
+      salt: binaryData, // 32 bytes of binary data
+      verifier: binaryData // 32 bytes of binary data
     };
   }
 }
