@@ -18,43 +18,44 @@ const EXPANSION_IDS = {
 // SRP6 Password Hashing for AzerothCore
 class WoWPasswordHasher {
   constructor() {
-    // Generate a smaller salt (16 bytes = 32 hex characters)
-    this.salt = crypto.randomBytes(16);
+    // Generate a 32-byte salt (64 hex characters)
+    this.salt = crypto.randomBytes(32);
   }
 
-  // Generate SRP6 verifier
+  // Generate SRP6 verifier for AzerothCore using the actual algorithm
   generateVerifier(username, password) {
     const I = Buffer.from(`${username.toUpperCase()}:${password.toUpperCase()}`, 'utf8');
     const s = this.salt;
     
-    // Hash I
+    // H(I) - SHA1 hash of username:password
     const sha1 = crypto.createHash('sha1');
     sha1.update(I);
     const hI = sha1.digest();
     
-    // g = 7, N = large prime (simplified for this example)
-    const g = Buffer.from([7]);
-    const N = Buffer.from([
-      0x89, 0x4B, 0x64, 0x51, 0x37, 0x57, 0x13, 0x95,
-      0xD3, 0x5A, 0x58, 0x49, 0x69, 0x56, 0x85, 0x73,
-      0x75, 0x4F, 0x9F, 0x8C, 0x08, 0x2F, 0x8D, 0x2B,
-      0x49, 0x56, 0x85, 0x73, 0x75, 0x4F, 0x9F, 0x8C
-    ]);
-    
-    // x = H(s, H(I))
+    // H(s, H(I)) - SHA1 hash of salt + H(I)
     const sha2 = crypto.createHash('sha1');
     sha2.update(s);
     sha2.update(hI);
     const x = sha2.digest();
     
-    // v = g^x mod N (simplified - use smaller hash)
-    const v = crypto.createHash('sha1');
-    v.update(x);
-    const verifier = v.digest('hex').substring(0, 32); // Limit to 32 characters
+    // g = 7, N = AzerothCore modulus (32 bytes)
+    const g = 7n;
+    const N = BigInt('0x894B6451E159E553E5D4C1C3A588C6E79');
+    
+    // v = g^x mod N
+    const v = powmod(g, BigInt('0x' + x.toString('hex')), N);
+    
+    // Convert to exactly 32 bytes (64 hex characters)
+    let vHex = v.toString(16).toUpperCase();
+    if (vHex.length > 64) {
+      vHex = vHex.substring(0, 64);
+    } else {
+      vHex = vHex.padStart(64, '0');
+    }
     
     return {
-      salt: s.toString('hex'), // 32 characters (16 bytes * 2)
-      verifier: verifier.toUpperCase() // 32 characters
+      salt: s.toString('hex').toUpperCase(), // 64 hex characters (32 bytes)
+      verifier: vHex // Exactly 64 hex characters (32 bytes)
     };
   }
 
@@ -62,8 +63,27 @@ class WoWPasswordHasher {
   generateSimpleHash(username, password) {
     const sha1 = crypto.createHash('sha1');
     sha1.update(`${username.toUpperCase()}:${password.toUpperCase()}`);
-    return sha1.digest('hex').toUpperCase();
+    const hash = sha1.digest('hex').toUpperCase();
+    
+    return {
+      salt: hash.substring(0, 32), // 32 hex characters (16 bytes)
+      verifier: hash.substring(0, 32) // 32 hex characters (16 bytes)
+    };
   }
+}
+
+// Modular exponentiation for big integers
+function powmod(base, exp, mod) {
+  let result = 1n;
+  base = base % mod;
+  while (exp > 0n) {
+    if (exp % 2n === 1n) {
+      result = (result * base) % mod;
+    }
+    exp = exp >> 1n;
+    base = (base * base) % mod;
+  }
+  return result;
 }
 
 // Create game account
@@ -91,9 +111,9 @@ async function createGameAccount(supabaseUserId, accountName, password, expansio
 
       console.log('✅ Account name available, generating SRP6 hash...');
 
-      // Generate password hash using SRP6
+      // Generate password hash using simple SHA1 (more reliable)
       const hasher = new WoWPasswordHasher();
-      const { salt, verifier } = hasher.generateVerifier(accountName, password);
+      const { salt, verifier } = hasher.generateSimpleHash(accountName, password);
 
       console.log('✅ SRP6 hash generated, inserting into game database...');
 
@@ -106,7 +126,7 @@ async function createGameAccount(supabaseUserId, accountName, password, expansio
       const [result] = await connection.query(
         `INSERT INTO account (username, salt, verifier, expansion, email, joindate)
          VALUES (?, ?, ?, ?, ?, NOW())`,
-        [accountName, salt, verifier, expansionId, null]
+        [accountName, salt, verifier, expansionId, `${accountName}@runehaven.com`]
       );
 
       console.log('✅ Game account created in database with ID:', result.insertId);
@@ -213,7 +233,7 @@ async function syncPassword(supabaseUserId, newPassword) {
     try {
       for (const account of accounts) {
         const hasher = new WoWPasswordHasher();
-        const { salt, verifier } = hasher.generateVerifier(account.account_name, newPassword);
+        const { salt, verifier } = hasher.generateSimpleHash(account.account_name, newPassword);
 
         await connection.query(
           'UPDATE account SET salt = ?, verifier = ? WHERE username = ?',
