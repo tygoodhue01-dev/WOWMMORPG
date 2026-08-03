@@ -1,7 +1,7 @@
-import express from 'express';
-import { exec } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
+const express = require('express');
+const { exec } = require('child_process');
+const fs = require('fs').promises;
+const path = require('path');
 
 const router = express.Router();
 
@@ -225,4 +225,4 @@ router.get('/log-files', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

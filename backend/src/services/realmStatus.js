@@ -1,6 +1,6 @@
-import { gameDbPool, supabase } from '../config/database.js';
-import mysql from 'mysql2/promise';
-import net from 'net';
+const { gameDbPool, supabase } = require('../config/database.js');
+const mysql = require('mysql2/promise');
+const net = require('net');
 
 // Characters database pool for AzerothCore
 const characterDbPool = mysql.createPool({
@@ -282,7 +282,7 @@ async function updateSupabaseRealmStatus() {
 }
 
 // Start polling for realm status
-export function startRealmStatusPolling() {
+exports.startRealmStatusPolling = function() {
   const interval = process.env.REALM_UPDATE_INTERVAL || 30000; // Default 30 seconds
   
   console.log(`Starting realm status polling (interval: ${interval}ms)`);
@@ -292,10 +292,10 @@ export function startRealmStatusPolling() {
   
   // Set up interval
   setInterval(updateSupabaseRealmStatus, interval);
-}
+};
 
 // Manual trigger for testing
-export async function triggerRealmUpdate() {
+exports.triggerRealmUpdate = async function() {
   await updateSupabaseRealmStatus();
   return { success: true, message: 'Realm status updated' };
-}
+};

@@ -1,15 +1,15 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import realmRoutes from './routes/realms.js';
-import accountRoutes from './routes/accounts.js';
-import characterRoutes from './routes/characters.js';
-import serverRoutes from './routes/server.js';
-import leaderboardRoutes from './routes/leaderboards.js';
-import armoryRoutes from './routes/armory.js';
-import itemRoutes from './routes/items.js';
-import guildRoutes from './routes/guilds.js';
-import { startRealmStatusPolling } from './services/realmStatus.js';
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const realmRoutes = require('./routes/realms.js');
+const accountRoutes = require('./routes/accounts.js');
+const characterRoutes = require('./routes/characters.js');
+const serverRoutes = require('./routes/server.js');
+const leaderboardRoutes = require('./routes/leaderboards.js');
+const armoryRoutes = require('./routes/armory.js');
+const itemRoutes = require('./routes/items.js');
+const guildRoutes = require('./routes/guilds.js');
+const { startRealmStatusPolling } = require('./services/realmStatus.js');
 
 dotenv.config();
 

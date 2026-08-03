@@ -1,10 +1,10 @@
-import express from 'express';
-import {
+const express = require('express');
+const {
   createGameAccount,
   getUserGameAccounts,
   deleteGameAccount,
   syncPassword
-} from '../services/accountSync.js';
+} = require('../services/accountSync.js');
 
 const router = express.Router();
 
@@ -100,4 +100,4 @@ router.post('/sync-password', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

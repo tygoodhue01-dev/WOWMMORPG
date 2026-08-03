@@ -1,5 +1,5 @@
-import mysql from 'mysql2/promise';
-import { gameDbPool } from '../config/database.js';
+const mysql = require('mysql2/promise');
+const { gameDbPool } = require('../config/database.js');
 
 // Character database pool (AzerothCore uses separate character database)
 const characterDbPool = mysql.createPool({
@@ -183,7 +183,7 @@ async function getCharacterStats(accountName) {
   }
 }
 
-export {
+module.exports = {
   getCharacters,
   getCharacterStats
 };

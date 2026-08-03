@@ -1,5 +1,5 @@
-import express from 'express';
-import { gameDbPool } from '../config/database.js';
+const express = require('express');
+const { gameDbPool } = require('../config/database.js');
 
 const router = express.Router();
 
@@ -374,4 +374,4 @@ router.get('/popular', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

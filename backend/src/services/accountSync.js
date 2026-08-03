@@ -1,5 +1,5 @@
-import crypto from 'crypto';
-import { gameDbPool, supabase } from '../config/database.js';
+const crypto = require('crypto');
+const { gameDbPool, supabase } = require('../config/database.js');
 
 // Expansion IDs for AzerothCore
 const EXPANSION_IDS = {
@@ -253,7 +253,7 @@ async function syncPassword(supabaseUserId, newPassword) {
   }
 }
 
-export {
+module.exports = {
   createGameAccount,
   getUserGameAccounts,
   deleteGameAccount,

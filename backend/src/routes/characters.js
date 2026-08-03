@@ -1,5 +1,5 @@
-import express from 'express';
-import { getCharacters, getCharacterStats } from '../services/characters.js';
+const express = require('express');
+const { getCharacters, getCharacterStats } = require('../services/characters.js');
 
 const router = express.Router();
 
@@ -37,4 +37,4 @@ router.get('/:accountName/stats', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

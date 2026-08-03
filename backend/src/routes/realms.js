@@ -1,6 +1,6 @@
-import express from 'express';
-import { triggerRealmUpdate } from '../services/realmStatus.js';
-import { supabase } from '../config/database.js';
+const express = require('express');
+const { triggerRealmUpdate } = require('../services/realmStatus.js');
+const { supabase } = require('../config/database.js');
 
 const router = express.Router();
 
@@ -39,4 +39,4 @@ router.post('/update', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
